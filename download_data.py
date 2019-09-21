@@ -16,6 +16,8 @@ headers = {
     'X-Forwarded-For': '64.18.15.200'
 }
 
+socks5 = 'socks5://127.0.0.1:1080'
+
 
 def _df_split_apply(tup_arg):
     split_ind, subset, func = tup_arg
@@ -98,7 +100,13 @@ def download_image(row):
     try:
         # use smaller timeout to skip errors, but can result in failed downloads
         response = requests.get(
-            row['url'], stream=False, timeout=10, allow_redirects=True, headers=headers)
+            row['url'],
+            stream=False,
+            timeout=10,
+            allow_redirects=True,
+            headers=headers,
+            proxies=dict(http=socks5, https=socks5)
+        )
         row['status'] = response.status_code
         #row['headers'] = dict(response.headers)
     except Exception as e:
